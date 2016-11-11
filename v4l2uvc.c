@@ -406,12 +406,13 @@ init_v4l2 (struct vdIn *vd)
 	       vd->videodevice);
       return -1;
     }
-  } else {
+  }/* irvine-01 mod so we can use normal web cams withouth V4L_CAP_READWRITE
+    else {
     if (!(vd->cap.capabilities & V4L2_CAP_READWRITE)) {
       fprintf (stderr, "%s does not support read i/o\n", vd->videodevice);
       return -1;
     }
-  }
+    }*/
 
   return 0;
 }

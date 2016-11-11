@@ -230,14 +230,13 @@ int
 main (int argc, char *argv[])
 {
   char *input_file = NULL;
-  struct timeval start_time, stop_time;
   char outnameBuff[1024];
   int quality = 95;
 
   int soft_compress_yuv = 0;
   int convert_yuv_to_ppm = 0;
 
-  char *sep;
+  //  char *sep;
   int inp;
   uint16_t width, height;
   void *pixels;

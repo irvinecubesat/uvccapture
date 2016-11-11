@@ -1,14 +1,15 @@
 include Make.rules.arm
 
-VERSION=0.4-PolySat
+VERSION=00.05-irvine-01
 
-override LDFLAGS+=-lm -ldl -lgpio
-override CFLAGS+=-Wall -std=gnu99 -DLINUX -DVERSION=\"$(VERSION)\"
+override LDFLAGS+=-lm -ldl -lgpio -L/opt/toolchain/toolchain-arm-linux/lib -Wl,-rpath -Wl,/opt/toolchain/toolchain-arm-linux/lib
+override CFLAGS+=-Wall -std=gnu99 -DLINUX -DVERSION=\"$(VERSION)\" -I /opt/toolchain/toolchain-arm-linux/include
 
 SRC=uvccapture.c v4l2uvc.c libjpeg_soft.c
 OBJS=$(SRC:.c=.o)
 EXECUTABLE=uvccapture
 INSTALL_DEST=$(BIN_PATH)
+STRIP?=strip
 
 all: $(EXECUTABLE) yuv_decode
 	$(STRIP) $(EXECUTABLE)
