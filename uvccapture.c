@@ -39,16 +39,17 @@
 
 #include "v4l2uvc.h"
 #include "libjpeg_soft.h"
+#ifdef _HAS_GPIO_
 #include <gpioapi.h>
+static int flash_gpio_active_val = 1;
+static struct gpio_struct flashGpio =  { 0 };
+#endif
 
 // #define JPEG_POSIX_DEST
 
 static const char version[] = VERSION;
 int run = 1;
 static char **cameraNames = NULL;
-
-static int flash_gpio_active_val = 1;
-static struct gpio_struct flashGpio =  { 0 };
 
 void
 sigcatch (int sig)
@@ -58,6 +59,7 @@ sigcatch (int sig)
   exit(0);
 }
 
+#ifdef _HAS_GPIO_
 static void flash_off(void)
 {
    if (flashGpio.pin > 0) {
@@ -71,6 +73,17 @@ static void flash_on(void)
       setGPIO(&flashGpio, OUT, flash_gpio_active_val);
    }
 }
+#else
+static void flash_off(void)
+{
+printf("flash not supported\n");
+}
+
+static void flash_on(void)
+{
+printf("flash not supported\n");
+}
+#endif
 
 void regsignal(int sig, void (*func)(int)) {
    struct sigaction sa;
@@ -100,7 +113,9 @@ usage (void)
   fprintf (stderr, "-o<filename>\tOutput filename(default: snap.jpg)\n");
   fprintf (stderr, "-d<device>\tV4L2 Device(default: /dev/video0)\n");
   fprintf (stderr, "-D<integer>\tDelay (s) before taking first image\n");
+#ifdef _HAS_GPIO_
   fprintf (stderr, "-F<integer>\tUse GPIO <integer> as flash\n");
+#endif
   fprintf (stderr, "-f<integer>\tSet flash active value to <integer>\n");
   fprintf (stderr,
 	   "-x<width>\tImage Width(must be supported by device)(>960 activates YUYV capture)\n");
@@ -989,13 +1004,14 @@ main (int argc, char *argv[])
       alarm_time = atoi(&argv[1][2]);
       break;
 
+#ifdef _HAS_GPIO_
    case 'F':
       initGPIO(0, atoi(&argv[1][2]), &flashGpio);
       break;
-
    case 'f':
       flash_gpio_active_val = atoi(&argv[1][2]);
       break;
+#endif
 
     default:
       fprintf (stderr, "Unknown option %s \n", argv[1]);
