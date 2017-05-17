@@ -76,12 +76,12 @@ static void flash_on(void)
 #else
 static void flash_off(void)
 {
-printf("flash not supported\n");
+//printf("flash not supported\n");
 }
 
 static void flash_on(void)
 {
-printf("flash not supported\n");
+//printf("flash not supported\n");
 }
 #endif
 
@@ -1027,7 +1027,10 @@ main (int argc, char *argv[])
      alarm(alarm_time);
 
   if (post_capture_command[0])
-    post_capture_command[1] = outputfile;
+  {
+    // use the generated output name as the argument to the post capture command
+    post_capture_command[1] = outnameBuff;
+  }
 
   if (verbose >= 1) {
     fprintf (stderr, "Using videodevice: %s\n", videodevice);
